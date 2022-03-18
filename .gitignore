@@ -1,0 +1,2 @@
+experiments/logs/ycb/*.txt
+trained_models/ycb/*.pth

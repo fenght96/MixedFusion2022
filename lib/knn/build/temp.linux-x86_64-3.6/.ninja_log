@@ -1,0 +1,4 @@
+# ninja log v5
+0	789	1646396650589192847	/home/fht/code/DenseFusion-1-Pytorch-1.6/lib/knn/build/temp.linux-x86_64-3.6/home/fht/code/DenseFusion-1-Pytorch-1.6/lib/knn/src/cuda/knn.o	c2a2b479536b187b
+0	12793	1646396662593282459	/home/fht/code/DenseFusion-1-Pytorch-1.6/lib/knn/build/temp.linux-x86_64-3.6/home/fht/code/DenseFusion-1-Pytorch-1.6/lib/knn/src/cpu/knn_cpu.o	ee05c434ff826ff7
+0	19727	1646396669521334177	/home/fht/code/DenseFusion-1-Pytorch-1.6/lib/knn/build/temp.linux-x86_64-3.6/home/fht/code/DenseFusion-1-Pytorch-1.6/lib/knn/src/vision.o	ff13c5aeea0d9ea7
