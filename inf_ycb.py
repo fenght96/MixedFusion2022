@@ -11,7 +11,10 @@ import numpy.ma as ma
 import math
 import open3d as o3d
 import torch
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> 7c6bbd67428c5fb1fd144f5ef49dd759f5fbcba0
 import torch.nn as nn
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
@@ -25,12 +28,19 @@ from torch.autograd import Variable
 from datasets.ycb.dataset import PoseDataset
 from lib.network import PoseNet, PoseRefineNet
 from lib.transformations import euler_matrix, quaternion_matrix, quaternion_from_matrix
+<<<<<<< HEAD
 from scipy.spatial.transform import Rotation as Ro
+=======
+>>>>>>> 7c6bbd67428c5fb1fd144f5ef49dd759f5fbcba0
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_root', type=str, default = '/home/fht/data/ocrtoc', help='dataset root dir')
 parser.add_argument('--model', type=str, default = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_model_current.pth',  help='resume PoseNet model')
+<<<<<<< HEAD
 parser.add_argument('--refine_model', type=str, default = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_refine_model_current.pth',  help='resume PoseRefineNet model')
+=======
+parser.add_argument('--refine_model', type=str, default = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_refine_model_238_0.026809793192859147.pth',  help='resume PoseRefineNet model')
+>>>>>>> 7c6bbd67428c5fb1fd144f5ef49dd759f5fbcba0
 opt = parser.parse_args()
 
 norm = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # DenseFusion
 
 <p align="center">
@@ -192,5 +193,8 @@ Please cite [DenseFusion](https://sites.google.com/view/densefusion) if you use 
 }
 ```
 
+=======
+# Pytorch 1.5+
+>>>>>>> 7c6bbd67428c5fb1fd144f5ef49dd759f5fbcba0
 ## License
 Licensed under the [MIT License](LICENSE)

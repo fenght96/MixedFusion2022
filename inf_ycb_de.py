@@ -26,7 +26,13 @@ from datasets.ycb.dataset import PoseDataset
 from lib.network import PoseNet, PoseRefineNet
 from lib.transformations import euler_matrix, quaternion_matrix, quaternion_from_matrix
 from scipy.spatial.transform import Rotation as Ro
+import segmentation_models_pytorch as smp
 
+CLASSES = ['back_','glue_1', 'square_plate_1', 'suger_2', 'potato_chip_2', 'small_clamp', 'lipton_tea', 'phillips_screwdriver', 'book_1',
+            'round_plate_1', 'orion_pie', 'plate_holder', 'round_plate_4', 'book_2', 'plastic_banana', 'power_drill', 'round_plate_2',
+            'potato_chip_1', 'potato_chip_3', 'square_plate_3', 'square_plate_4', 'large_clamp', 'glue_2', 'extra_large_clamp', 'suger_1',
+            'round_plate_3', 'large_marker', 'medium_clamp', 'flat_screwdriver', 'scissors', 'book_3', 'correction_fuid', 'square_plate_2',
+            'mini_claw_hammer_1']
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_root', type=str, default = '/home/fht/data/ocrtoc', help='dataset root dir')
 parser.add_argument('--model', type=str, default = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_model_current.pth',  help='resume PoseNet model')
@@ -107,6 +113,11 @@ refiner.load_state_dict(torch.load(opt.refine_model))
 refiner.eval()
 
 
+seg = torch.load('./seg_best_model.pth')
+seg = seg.cuda()
+seg.eval()
+
+
 testlist = []
 input_file = open('{0}/test.txt'.format(dataset_config_dir))
 while 1:
@@ -141,8 +152,6 @@ while 1:
     class_id += 1
 
 for now in range(0, 1):
-    testlist[now] = '/home/fht/data/ocrtoc/scenes/20210512171024/rgb_undistort/0000'
-
     print(f'test path :{testlist[now]}')
     with open(testlist[now].replace('rgb_undistort', 'obj_out_pose') + '.txt', 'r') as f:
         lines = f.readlines()
@@ -158,6 +167,18 @@ for now in range(0, 1):
 
 
     img = Image.open('{0}.png'.format(testlist[now]))
+    img_tensor = transforms.ToTensor()(img).unsqueeze(0).cuda()
+    img_tensor_used = torch.zeros([1,3,736,1280]).cuda()
+    img_tensor_used[:,:,:720,:] = img_tensor
+    print(img_tensor_used.shape)
+    mask_seg = seg.predict(img_tensor_used)
+    seg_outs = (mask_seg.squeeze().cpu().numpy().round())
+    seg_out = np.argmax(seg_outs, axis = 0)
+
+
+    pdb.set_trace()
+
+
     depth = np.array(Image.open('{0}.png'.format(testlist[now].replace('rgb_undistort', 'depth_undistort'))))
 
     label = np.load('{0}.npy'.format(testlist[now].replace('rgb_undistort', 'seg_masks')))
