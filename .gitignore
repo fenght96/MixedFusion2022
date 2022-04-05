@@ -1,2 +1,4 @@
 experiments/logs/ycb/*.txt
+yolov5/
+best.pt
 trained_models/ycb/*.pth
