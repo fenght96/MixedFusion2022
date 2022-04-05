@@ -37,21 +37,12 @@ parser.add_argument('--lr_rate', default=0.3, help='learning rate decay rate')
 parser.add_argument('--w', default=0.015, help='learning rate')
 parser.add_argument('--w_rate', default=0.3, help='learning rate decay rate')
 parser.add_argument('--decay_margin', default=0.016, help='margin to decay lr & w')
-<<<<<<< HEAD
 parser.add_argument('--refine_margin', default=0.025, help='margin to start the training of iterative refinement')
 parser.add_argument('--noise_trans', default=0.01, help='range of the random noise of translation added to the training data')
 parser.add_argument('--iteration', type=int, default = 2, help='number of refinement iterations')
 parser.add_argument('--nepoch', type=int, default=500, help='max number of epochs to train')
 parser.add_argument('--resume_posenet', type=str, default = 'pose_model_1_0.02338604463867651.pth',  help='resume PoseNet model')
 parser.add_argument('--resume_refinenet', type=str, default = 'pose_refine_model_10_0.015710957875899073.pth',  help='resume PoseRefineNet model')
-=======
-parser.add_argument('--refine_margin', default=0.015, help='margin to start the training of iterative refinement')
-parser.add_argument('--noise_trans', default=0.01, help='range of the random noise of translation added to the training data')
-parser.add_argument('--iteration', type=int, default = 2, help='number of refinement iterations')
-parser.add_argument('--nepoch', type=int, default=500, help='max number of epochs to train')
-parser.add_argument('--resume_posenet', type=str, default = 'pose_model_2_0.07307686919593047.pth',  help='resume PoseNet model')
-parser.add_argument('--resume_refinenet', type=str, default = '',  help='resume PoseRefineNet model')
->>>>>>> 7c6bbd67428c5fb1fd144f5ef49dd759f5fbcba0
 parser.add_argument('--start_epoch', type=int, default = 1, help='which epoch to start')
 opt = parser.parse_args()
 
@@ -114,7 +105,7 @@ def main():
         optimizer = optim.Adam(estimator.parameters(), lr=opt.lr)
 
     if opt.dataset == 'ycb':
-        dataset = PoseDataset_ycb('train', opt.num_points, True, opt.dataset_root, opt.noise_trans, opt.refine_start)
+        dataset = PoseDataset_ycb('test', opt.num_points, True, opt.dataset_root, opt.noise_trans, opt.refine_start)
     elif opt.dataset == 'linemod':
         dataset = PoseDataset_linemod('train', opt.num_points, True, opt.dataset_root, opt.noise_trans, opt.refine_start)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=opt.workers)

@@ -1,200 +1,304 @@
-<<<<<<< HEAD
-# DenseFusion
+<div align="center">
+<p>
+   <a align="left" href="https://ultralytics.com/yolov5" target="_blank">
+   <img width="850" src="https://github.com/ultralytics/yolov5/releases/download/v1.0/splash.jpg"></a>
+</p>
+<br>
+<div>
+   <a href="https://github.com/ultralytics/yolov5/actions"><img src="https://github.com/ultralytics/yolov5/workflows/CI%20CPU%20testing/badge.svg" alt="CI CPU testing"></a>
+   <a href="https://zenodo.org/badge/latestdoi/264818686"><img src="https://zenodo.org/badge/264818686.svg" alt="YOLOv5 Citation"></a>
+   <a href="https://hub.docker.com/r/ultralytics/yolov5"><img src="https://img.shields.io/docker/pulls/ultralytics/yolov5?logo=docker" alt="Docker Pulls"></a>
+   <br>
+   <a href="https://colab.research.google.com/github/ultralytics/yolov5/blob/master/tutorial.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+   <a href="https://www.kaggle.com/ultralytics/yolov5"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" alt="Open In Kaggle"></a>
+   <a href="https://join.slack.com/t/ultralytics/shared_invite/zt-w29ei8bp-jczz7QYUmDtgo6r6KcMIAg"><img src="https://img.shields.io/badge/Slack-Join_Forum-blue.svg?logo=slack" alt="Join Forum"></a>
+</div>
 
-<p align="center">
-	<img src ="assets/pullfig.png" width="1000" />
+<br>
+<p>
+YOLOv5 🚀 is a family of object detection architectures and models pretrained on the COCO dataset, and represents <a href="https://ultralytics.com">Ultralytics</a>
+ open-source research into future vision AI methods, incorporating lessons learned and best practices evolved over thousands of hours of research and development.
 </p>
 
-## Table of Content
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Code Structure](#code-structure)
-- [Datasets](#datasets)
-- [Training](#training)
-- [Evaluation](#evaluation)
-	- [Evaluation on YCB_Video Dataset](#evaluation-on-ycb_video-dataset)
-	- [Evaluation on LineMOD Dataset](#evaluation-on-linemod-dataset)
-- [Results](#results)
-- [Trained Checkpoints](#trained-checkpoints)
-- [Tips for your own dataset](#tips-for-your-own-dataset)
-- [Citations](#citations)
-- [License](#license)
+<div align="center">
+   <a href="https://github.com/ultralytics">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-github.png" width="2%"/>
+   </a>
+   <img width="2%" />
+   <a href="https://www.linkedin.com/company/ultralytics">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-linkedin.png" width="2%"/>
+   </a>
+   <img width="2%" />
+   <a href="https://twitter.com/ultralytics">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-twitter.png" width="2%"/>
+   </a>
+   <img width="2%" />
+   <a href="https://www.producthunt.com/@glenn_jocher">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-producthunt.png" width="2%"/>
+   </a>
+   <img width="2%" />
+   <a href="https://youtube.com/ultralytics">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-youtube.png" width="2%"/>
+   </a>
+   <img width="2%" />
+   <a href="https://www.facebook.com/ultralytics">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-facebook.png" width="2%"/>
+   </a>
+   <img width="2%" />
+   <a href="https://www.instagram.com/ultralytics/">
+   <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-instagram.png" width="2%"/>
+   </a>
+</div>
 
-## Overview
+<!--
+<a align="center" href="https://ultralytics.com/yolov5" target="_blank">
+<img width="800" src="https://github.com/ultralytics/yolov5/releases/download/v1.0/banner-api.png"></a>
+-->
 
-This repository is the implementation code of the paper "DenseFusion: 6D Object Pose Estimation by Iterative Dense Fusion"([arXiv](https://arxiv.org/abs/1901.04780), [Project](https://sites.google.com/view/densefusion), [Video](https://www.youtube.com/watch?v=SsE5-FuK5jo)) by Wang et al. at [Stanford Vision and Learning Lab](http://svl.stanford.edu/) and [Stanford People, AI & Robots Group](http://pair.stanford.edu/). The model takes an RGB-D image as input and predicts the 6D pose of the each object in the frame. This network is implemented using [PyTorch](https://pytorch.org/) and the rest of the framework is in Python. Since this project focuses on the 6D pose estimation process, we do not specifically limit the choice of the segmentation models. You can choose your preferred semantic-segmentation/instance-segmentation methods according to your needs. In this repo, we provide our full implementation code of the DenseFusion model, Iterative Refinement model and a vanilla SegNet semantic-segmentation model used in our real-robot grasping experiment. The ROS code of the real robot grasping experiment is not included.
+</div>
 
+## <div align="center">Documentation</div>
 
-## Requirements
+See the [YOLOv5 Docs](https://docs.ultralytics.com) for full documentation on training, testing and deployment.
 
-* Python 2.7/3.5/3.6 (If you want to use Python2.7 to run this repo, please rebuild the `lib/knn/` (with PyTorch 0.4.1).)
-* [PyTorch 0.4.1](https://pytorch.org/) ([PyTroch 1.0 branch](<https://github.com/j96w/DenseFusion/tree/Pytorch-1.0>))
-* PIL
-* scipy
-* numpy
-* pyyaml
-* logging
-* matplotlib
-* CUDA 7.5/8.0/9.0 (Required. CPU-only will lead to extreme slow training speed because of the loss calculation of the symmetry objects (pixel-wise nearest neighbour loss).)
+## <div align="center">Quick Start Examples</div>
 
-## Code Structure
-* **datasets**
-	* **datasets/ycb**
-		* **datasets/ycb/dataset.py**: Data loader for YCB_Video dataset.
-		* **datasets/ycb/dataset_config**
-			* **datasets/ycb/dataset_config/classes.txt**: Object list of YCB_Video dataset.
-			* **datasets/ycb/dataset_config/train_data_list.txt**: Training set of YCB_Video dataset.
-			* **datasets/ycb/dataset_config/test_data_list.txt**: Testing set of YCB_Video dataset.
-	* **datasets/linemod**
-		* **datasets/linemod/dataset.py**: Data loader for LineMOD dataset.
-		* **datasets/linemod/dataset_config**: 
-			* **datasets/linemod/dataset_config/models_info.yml**: Object model info of LineMOD dataset.
-* **replace_ycb_toolbox**: Replacement codes for the evaluation with [YCB_Video_toolbox](https://github.com/yuxng/YCB_Video_toolbox).
-* **trained_models**
-	* **trained_models/ycb**: Checkpoints of YCB_Video dataset.
-	* **trained_models/linemod**: Checkpoints of LineMOD dataset.
-* **lib**
-	* **lib/loss.py**: Loss calculation for DenseFusion model.
-	* **lib/loss_refiner.py**: Loss calculation for iterative refinement model.
-	* **lib/transformations.py**: [Transformation Function Library](https://www.lfd.uci.edu/~gohlke/code/transformations.py.html).
-    * **lib/network.py**: Network architecture.
-    * **lib/extractors.py**: Encoder network architecture adapted from [pspnet-pytorch](https://github.com/Lextal/pspnet-pytorch).
-    * **lib/pspnet.py**: Decoder network architecture.
-    * **lib/utils.py**: Logger code.
-    * **lib/knn/**: CUDA K-nearest neighbours library adapted from [pytorch_knn_cuda](https://github.com/chrischoy/pytorch_knn_cuda).
-* **tools**
-	* **tools/_init_paths.py**: Add local path.
-	* **tools/eval_ycb.py**: Evaluation code for YCB_Video dataset.
-	* **tools/eval_linemod.py**: Evaluation code for LineMOD dataset.
-	* **tools/train.py**: Training code for YCB_Video dataset and LineMOD dataset.
-* **experiments**
-	* **experiments/eval_result**
-		* **experiments/eval_result/ycb**
-			* **experiments/eval_result/ycb/Densefusion_wo_refine_result**: Evaluation result on YCB_Video dataset without refinement.
-			* **experiments/eval_result/ycb/Densefusion_iterative_result**: Evaluation result on YCB_Video dataset with iterative refinement.
-		* **experiments/eval_result/linemod**: Evaluation results on LineMOD dataset with iterative refinement.
-	* **experiments/logs/**: Training log files.
-	* **experiments/scripts**
-		* **experiments/scripts/train_ycb.sh**: Training script on the YCB_Video dataset.
-		* **experiments/scripts/train_linemod.sh**: Training script on the LineMOD dataset.
-		* **experiments/scripts/eval_ycb.sh**: Evaluation script on the YCB_Video dataset.
-		* **experiments/scripts/eval_linemod.sh**: Evaluation script on the LineMOD dataset.
-* **download.sh**: Script for downloading YCB_Video Dataset, preprocessed LineMOD dataset and the trained checkpoints.
+<details open>
+<summary>Install</summary>
 
+Clone repo and install [requirements.txt](https://github.com/ultralytics/yolov5/blob/master/requirements.txt) in a
+[**Python>=3.7.0**](https://www.python.org/) environment, including
+[**PyTorch>=1.7**](https://pytorch.org/get-started/locally/).
 
-## Datasets
-
-This work is tested on two 6D object pose estimation datasets:
-
-* [YCB_Video Dataset](https://rse-lab.cs.washington.edu/projects/posecnn/): Training and Testing sets follow [PoseCNN](https://arxiv.org/abs/1711.00199). The training set includes 80 training videos 0000-0047 & 0060-0091 (choosen by 7 frame as a gap in our training) and synthetic data 000000-079999. The testing set includes 2949 keyframes from 10 testing videos 0048-0059.
-
-* [LineMOD](http://campar.in.tum.de/Main/StefanHinterstoisser): Download the [preprocessed LineMOD dataset](https://drive.google.com/drive/folders/19ivHpaKm9dOrr12fzC8IDFczWRPFxho7) (including the testing results outputted by the trained vanilla SegNet used for evaluation).
-
-Download YCB_Video Dataset, preprocessed LineMOD dataset and the trained checkpoints (You can modify this script according to your needs.):
-```	
-./download.sh
+```bash
+git clone https://github.com/ultralytics/yolov5  # clone
+cd yolov5
+pip install -r requirements.txt  # install
 ```
 
-## Training
+</details>
 
-* YCB_Video Dataset:
-	After you have downloaded and unzipped the YCB_Video_Dataset.zip and installed all the dependency packages, please run:
-```	
-./experiments/scripts/train_ycb.sh
+<details open>
+<summary>Inference</summary>
+
+Inference with YOLOv5 and [PyTorch Hub](https://github.com/ultralytics/yolov5/issues/36)
+. [Models](https://github.com/ultralytics/yolov5/tree/master/models) download automatically from the latest
+YOLOv5 [release](https://github.com/ultralytics/yolov5/releases).
+
+```python
+import torch
+
+# Model
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s')  # or yolov5m, yolov5l, yolov5x, custom
+
+# Images
+img = 'https://ultralytics.com/images/zidane.jpg'  # or file, Path, PIL, OpenCV, numpy, list
+
+# Inference
+results = model(img)
+
+# Results
+results.print()  # or .show(), .save(), .crop(), .pandas(), etc.
 ```
-* LineMOD Dataset:
-	After you have downloaded and unzipped the Linemod_preprocessed.zip, please run:
-```	
-./experiments/scripts/train_linemod.sh
+
+</details>
+
+
+
+<details>
+<summary>Inference with detect.py</summary>
+
+`detect.py` runs inference on a variety of sources, downloading [models](https://github.com/ultralytics/yolov5/tree/master/models) automatically from
+the latest YOLOv5 [release](https://github.com/ultralytics/yolov5/releases) and saving results to `runs/detect`.
+
+```bash
+python detect.py --source 0  # webcam
+                          img.jpg  # image
+                          vid.mp4  # video
+                          path/  # directory
+                          path/*.jpg  # glob
+                          'https://youtu.be/Zgi9g1ksQHc'  # YouTube
+                          'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP stream
 ```
-**Training Process**: The training process contains two components: (i) Training of the DenseFusion model. (ii) Training of the Iterative Refinement model. In this code, a DenseFusion model will be trained first. When the average testing distance result (ADD for non-symmetry objects, ADD-S for symmetry objects) is smaller than a certain margin, the training of the Iterative Refinement model will start automatically and the DenseFusion model will then be fixed. You can change this margin to have better DenseFusion result without refinement but it's inferior than the final result after the iterative refinement. 
 
-**Checkpoints and Resuming**: After the training of each 1000 batches, a `pose_model_current.pth` / `pose_refine_model_current.pth` checkpoint will be saved. You can use it to resume the training. After each testing epoch, if the average distance result is the best so far, a `pose_model_(epoch)_(best_score).pth` /  `pose_model_refiner_(epoch)_(best_score).pth` checkpoint will be saved. You can use it for the evaluation.
+</details>
 
-**Notice**: The training of the iterative refinement model takes some time. Please be patient and the improvement will come after about 30 epoches.
+<details>
+<summary>Training</summary>
 
+The commands below reproduce YOLOv5 [COCO](https://github.com/ultralytics/yolov5/blob/master/data/scripts/get_coco.sh)
+results. [Models](https://github.com/ultralytics/yolov5/tree/master/models)
+and [datasets](https://github.com/ultralytics/yolov5/tree/master/data) download automatically from the latest
+YOLOv5 [release](https://github.com/ultralytics/yolov5/releases). Training times for YOLOv5n/s/m/l/x are
+1/2/4/6/8 days on a V100 GPU ([Multi-GPU](https://github.com/ultralytics/yolov5/issues/475) times faster). Use the
+largest `--batch-size` possible, or pass `--batch-size -1` for
+YOLOv5 [AutoBatch](https://github.com/ultralytics/yolov5/pull/5092). Batch sizes shown for V100-16GB.
 
-* vanilla SegNet:
-	Just run:
+```bash
+python train.py --data coco.yaml --cfg yolov5n.yaml --weights '' --batch-size 128
+                                       yolov5s                                64
+                                       yolov5m                                40
+                                       yolov5l                                24
+                                       yolov5x                                16
 ```
-cd vanilla_segmentation/
-python train.py --dataset_root=./datasets/ycb/YCB_Video_Dataset
-```
-To make the best use of the training set, several data augementation techniques are used in this code:
 
-(1) A random noise is added to the brightness, contrast and saturation of the input RGB image with the `torchvision.transforms.ColorJitter` function, where we set the function as `torchvision.transforms.ColorJitter(0.2, 0.2, 0.2, 0.05)`.
+<img width="800" src="https://user-images.githubusercontent.com/26833433/90222759-949d8800-ddc1-11ea-9fa1-1c97eed2b963.png">
 
-(2) A random pose translation noise is added to the training set of the pose estimator, where we set the range of the translation noise to 3cm for both datasets.
+</details>
 
-(3) For the YCB_Video dataset, since the synthetic data do not contain background. We randomly select the real training data as the background. In each frame, we also randomly select two instances segmentation clips from another synthetic training image to mask at the front of the input RGB-D image, so that more occlusion situations can be generated.
+<details open>
+<summary>Tutorials</summary>
 
-## Evaluation
+* [Train Custom Data](https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data)&nbsp; 🚀 RECOMMENDED
+* [Tips for Best Training Results](https://github.com/ultralytics/yolov5/wiki/Tips-for-Best-Training-Results)&nbsp; ☘️
+  RECOMMENDED
+* [Weights & Biases Logging](https://github.com/ultralytics/yolov5/issues/1289)&nbsp; 🌟 NEW
+* [Roboflow for Datasets, Labeling, and Active Learning](https://github.com/ultralytics/yolov5/issues/4975)&nbsp; 🌟 NEW
+* [Multi-GPU Training](https://github.com/ultralytics/yolov5/issues/475)
+* [PyTorch Hub](https://github.com/ultralytics/yolov5/issues/36)&nbsp; ⭐ NEW
+* [TFLite, ONNX, CoreML, TensorRT Export](https://github.com/ultralytics/yolov5/issues/251) 🚀
+* [Test-Time Augmentation (TTA)](https://github.com/ultralytics/yolov5/issues/303)
+* [Model Ensembling](https://github.com/ultralytics/yolov5/issues/318)
+* [Model Pruning/Sparsity](https://github.com/ultralytics/yolov5/issues/304)
+* [Hyperparameter Evolution](https://github.com/ultralytics/yolov5/issues/607)
+* [Transfer Learning with Frozen Layers](https://github.com/ultralytics/yolov5/issues/1314)&nbsp; ⭐ NEW
+* [Architecture Summary](https://github.com/ultralytics/yolov5/issues/6998)&nbsp; ⭐ NEW
 
-### Evaluation on YCB_Video Dataset
-For fair comparsion, we use the same segmentation results of [PoseCNN](https://rse-lab.cs.washington.edu/projects/posecnn/) and compare with their results after ICP refinement.
-Please run:
-```
-./experiments/scripts/eval_ycb.sh
-```
-This script will first download the `YCB_Video_toolbox` to the root folder of this repo and test the selected DenseFusion and Iterative Refinement models on the 2949 keyframes of the 10 testing video in YCB_Video Dataset with the same segmentation result of PoseCNN. The result without refinement is stored in `experiments/eval_result/ycb/Densefusion_wo_refine_result` and the refined result is in `experiments/eval_result/ycb/Densefusion_iterative_result`.
+</details>
 
-After that, you can add the path of `experiments/eval_result/ycb/Densefusion_wo_refine_result/` and `experiments/eval_result/ycb/Densefusion_iterative_result/` to the code `YCB_Video_toolbox/evaluate_poses_keyframe.m` and run it with [MATLAB](https://www.mathworks.com/products/matlab.html). The code `YCB_Video_toolbox/plot_accuracy_keyframe.m` can show you the comparsion plot result. You can easily make it by copying the adapted codes from the `replace_ycb_toolbox/` folder and replace them in the `YCB_Video_toolbox/` folder. But you might still need to change the path of your `YCB_Video Dataset/` in the `globals.m` and copy two result folders(`Densefusion_wo_refine_result/` and `Densefusion_iterative_result/`) to the `YCB_Video_toolbox/` folder. 
+## <div align="center">Environments</div>
+
+Get started in seconds with our verified environments. Click each icon below for details.
+
+<div align="center">
+    <a href="https://colab.research.google.com/github/ultralytics/yolov5/blob/master/tutorial.ipynb">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-colab-small.png" width="15%"/>
+    </a>
+    <a href="https://www.kaggle.com/ultralytics/yolov5">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-kaggle-small.png" width="15%"/>
+    </a>
+    <a href="https://hub.docker.com/r/ultralytics/yolov5">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-docker-small.png" width="15%"/>
+    </a>
+    <a href="https://github.com/ultralytics/yolov5/wiki/AWS-Quickstart">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-aws-small.png" width="15%"/>
+    </a>
+    <a href="https://github.com/ultralytics/yolov5/wiki/GCP-Quickstart">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-gcp-small.png" width="15%"/>
+    </a>
+</div>
+
+## <div align="center">Integrations</div>
+
+<div align="center">
+    <a href="https://wandb.ai/site?utm_campaign=repo_yolo_readme">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-wb-long.png" width="49%"/>
+    </a>
+    <a href="https://roboflow.com/?ref=ultralytics">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-roboflow-long.png" width="49%"/>
+    </a>
+</div>
+
+|Weights and Biases|Roboflow ⭐ NEW|
+|:-:|:-:|
+|Automatically track and visualize all your YOLOv5 training runs in the cloud with [Weights & Biases](https://wandb.ai/site?utm_campaign=repo_yolo_readme)|Label and export your custom datasets directly to YOLOv5 for training with [Roboflow](https://roboflow.com/?ref=ultralytics) |
 
 
-### Evaluation on LineMOD Dataset
-Just run:
-```
-./experiments/scripts/eval_linemod.sh
-```
-This script will test the models on the testing set of the LineMOD dataset with the masks outputted by the trained vanilla SegNet model. The result will be printed at the end of the execution and saved as a log in `experiments/eval_result/linemod/`.
+<!-- ## <div align="center">Compete and Win</div>
 
-
-## Results
-
-* YCB_Video Dataset:
-
-Quantitative evaluation result with ADD-S metric compared to other RGB-D methods. `Ours(per-pixel)` is the result of the DenseFusion model without refinement and `Ours(iterative)` is the result with iterative refinement.
+We are super excited about our first-ever Ultralytics YOLOv5 🚀 EXPORT Competition with **$10,000** in cash prizes!
 
 <p align="center">
-	<img src ="assets/result_ycb.png" width="600" />
-</p>
+  <a href="https://github.com/ultralytics/yolov5/discussions/3213">
+  <img width="850" src="https://github.com/ultralytics/yolov5/releases/download/v1.0/banner-export-competition.png"></a>
+</p> -->
 
-**Important!** Before you use these numbers to compare with your methods, please make sure one important issus: One difficulty for testing on the YCB_Video Dataset is how to let the network to tell the difference between the object `051_large_clamp` and `052_extra_large_clamp`. The result of all the approaches in this table uses the same segmentation masks released by PoseCNN without any detection priors, so all of them suffer a performance drop on these two objects because of the poor detection result and this drop is also added to the final overall score. If you have added detection priors to your detector to distinguish these two objects, please clarify or do not copy the overall score for comparsion experiments.
+## <div align="center">Why YOLOv5</div>
 
-* LineMOD Dataset:
+<p align="left"><img width="800" src="https://user-images.githubusercontent.com/26833433/155040763-93c22a27-347c-4e3c-847a-8094621d3f4e.png"></p>
+<details>
+  <summary>YOLOv5-P5 640 Figure (click to expand)</summary>
 
-Quantitative evaluation result with ADD metric for non-symmetry objects and ADD-S for symmetry objects(eggbox, glue) compared to other RGB-D methods. High performance RGB methods are also listed for reference.
+<p align="left"><img width="800" src="https://user-images.githubusercontent.com/26833433/155040757-ce0934a3-06a6-43dc-a979-2edbbd69ea0e.png"></p>
+</details>
+<details>
+  <summary>Figure Notes (click to expand)</summary>
 
-<p align="center">
-	<img src ="assets/result_linemod.png" width="500" />
-</p>
+* **COCO AP val** denotes mAP@0.5:0.95 metric measured on the 5000-image [COCO val2017](http://cocodataset.org) dataset over various inference sizes from 256 to 1536.
+* **GPU Speed** measures average inference time per image on [COCO val2017](http://cocodataset.org) dataset using a [AWS p3.2xlarge](https://aws.amazon.com/ec2/instance-types/p3/) V100 instance at batch-size 32.
+* **EfficientDet** data from [google/automl](https://github.com/google/automl) at batch size 8.
+* **Reproduce** by `python val.py --task study --data coco.yaml --iou 0.7 --weights yolov5n6.pt yolov5s6.pt yolov5m6.pt yolov5l6.pt yolov5x6.pt`
+</details>
 
-The qualitative result on the YCB_Video dataset.
+### Pretrained Checkpoints
 
-<p align="center">
-	<img src ="assets/compare.png" width="600" />
-</p>
+[assets]: https://github.com/ultralytics/yolov5/releases
 
-## Trained Checkpoints
-You can download the trained DenseFusion and Iterative Refinement checkpoints of both datasets from [Link](https://drive.google.com/drive/folders/19ivHpaKm9dOrr12fzC8IDFczWRPFxho7).
+[TTA]: https://github.com/ultralytics/yolov5/issues/303
 
-## Tips for your own dataset
-As you can see in this repo, the network code and the hyperparameters(lr and w) remain the same for both datasets. Which means you might not need to adjust too much on the network structure and hyperparameters when you use this repo on your own dataset. Please make sure that the distance metric in your dataset should be converted to meter, otherwise the hyperparameter w need to be adjusted. Several useful tools including [LabelFusion](https://github.com/RobotLocomotion/LabelFusion) and [sixd_toolkit](https://github.com/thodan/sixd_toolkit) has been tested to work well. (Please make sure to turn on the depth image collection in LabelFusion when you use it.)
+|Model |size<br><sup>(pixels) |mAP<sup>val<br>0.5:0.95 |mAP<sup>val<br>0.5 |Speed<br><sup>CPU b1<br>(ms) |Speed<br><sup>V100 b1<br>(ms) |Speed<br><sup>V100 b32<br>(ms) |params<br><sup>(M) |FLOPs<br><sup>@640 (B)
+|---                    |---  |---    |---    |---    |---    |---    |---    |---
+|[YOLOv5n][assets]      |640  |28.0   |45.7   |**45** |**6.3**|**0.6**|**1.9**|**4.5**
+|[YOLOv5s][assets]      |640  |37.4   |56.8   |98     |6.4    |0.9    |7.2    |16.5
+|[YOLOv5m][assets]      |640  |45.4   |64.1   |224    |8.2    |1.7    |21.2   |49.0
+|[YOLOv5l][assets]      |640  |49.0   |67.3   |430    |10.1   |2.7    |46.5   |109.1
+|[YOLOv5x][assets]      |640  |50.7   |68.9   |766    |12.1   |4.8    |86.7   |205.7
+|                       |     |       |       |       |       |       |       |
+|[YOLOv5n6][assets]     |1280 |36.0   |54.4   |153    |8.1    |2.1    |3.2    |4.6
+|[YOLOv5s6][assets]     |1280 |44.8   |63.7   |385    |8.2    |3.6    |12.6   |16.8
+|[YOLOv5m6][assets]     |1280 |51.3   |69.3   |887    |11.1   |6.8    |35.7   |50.0
+|[YOLOv5l6][assets]     |1280 |53.7   |71.3   |1784   |15.8   |10.5   |76.8   |111.4
+|[YOLOv5x6][assets]<br>+ [TTA][TTA]|1280<br>1536 |55.0<br>**55.8** |72.7<br>**72.7** |3136<br>- |26.2<br>- |19.4<br>- |140.7<br>- |209.8<br>-
 
+<details>
+  <summary>Table Notes (click to expand)</summary>
 
-## Citations
-Please cite [DenseFusion](https://sites.google.com/view/densefusion) if you use this repository in your publications:
-```
-@article{wang2019densefusion,
-  title={DenseFusion: 6D Object Pose Estimation by Iterative Dense Fusion},
-  author={Wang, Chen and Xu, Danfei and Zhu, Yuke and Mart{\'\i}n-Mart{\'\i}n, Roberto and Lu, Cewu and Fei-Fei, Li and Savarese, Silvio},
-  booktitle={Computer Vision and Pattern Recognition (CVPR)},
-  year={2019}
-}
-```
+* All checkpoints are trained to 300 epochs with default settings. Nano and Small models use [hyp.scratch-low.yaml](https://github.com/ultralytics/yolov5/blob/master/data/hyps/hyp.scratch-low.yaml) hyps, all others use [hyp.scratch-high.yaml](https://github.com/ultralytics/yolov5/blob/master/data/hyps/hyp.scratch-high.yaml).
+* **mAP<sup>val</sup>** values are for single-model single-scale on [COCO val2017](http://cocodataset.org) dataset.<br>Reproduce by `python val.py --data coco.yaml --img 640 --conf 0.001 --iou 0.65`
+* **Speed** averaged over COCO val images using a [AWS p3.2xlarge](https://aws.amazon.com/ec2/instance-types/p3/) instance. NMS times (~1 ms/img) not included.<br>Reproduce by `python val.py --data coco.yaml --img 640 --task speed --batch 1`
+* **TTA** [Test Time Augmentation](https://github.com/ultralytics/yolov5/issues/303) includes reflection and scale augmentations.<br>Reproduce by `python val.py --data coco.yaml --img 1536 --iou 0.7 --augment`
 
-=======
-# Pytorch 1.5+
->>>>>>> 7c6bbd67428c5fb1fd144f5ef49dd759f5fbcba0
-## License
-Licensed under the [MIT License](LICENSE)
+</details>
+
+## <div align="center">Contribute</div>
+
+We love your input! We want to make contributing to YOLOv5 as easy and transparent as possible. Please see our [Contributing Guide](CONTRIBUTING.md) to get started, and fill out the [YOLOv5 Survey](https://ultralytics.com/survey?utm_source=github&utm_medium=social&utm_campaign=Survey) to send us feedback on your experiences. Thank you to all our contributors!
+
+<a href="https://github.com/ultralytics/yolov5/graphs/contributors"><img src="https://opencollective.com/ultralytics/contributors.svg?width=990" /></a>
+
+## <div align="center">Contact</div>
+
+For YOLOv5 bugs and feature requests please visit [GitHub Issues](https://github.com/ultralytics/yolov5/issues). For business inquiries or
+professional support requests please visit [https://ultralytics.com/contact](https://ultralytics.com/contact).
+
+<br>
+
+<div align="center">
+    <a href="https://github.com/ultralytics">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-github.png" width="3%"/>
+    </a>
+    <img width="3%" />
+    <a href="https://www.linkedin.com/company/ultralytics">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-linkedin.png" width="3%"/>
+    </a>
+    <img width="3%" />
+    <a href="https://twitter.com/ultralytics">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-twitter.png" width="3%"/>
+    </a>
+    <img width="3%" />
+    <a href="https://www.producthunt.com/@glenn_jocher">
+    <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-producthunt.png" width="3%"/>
+    </a>
+    <img width="3%" />
+    <a href="https://youtube.com/ultralytics">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-youtube.png" width="3%"/>
+    </a>
+    <img width="3%" />
+    <a href="https://www.facebook.com/ultralytics">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-facebook.png" width="3%"/>
+    </a>
+    <img width="3%" />
+    <a href="https://www.instagram.com/ultralytics/">
+        <img src="https://github.com/ultralytics/yolov5/releases/download/v1.0/logo-social-instagram.png" width="3%"/>
+    </a>
+</div>
