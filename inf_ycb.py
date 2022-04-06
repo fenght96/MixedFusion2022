@@ -1,4 +1,3 @@
-import argparse
 import os
 import copy
 import random
@@ -29,15 +28,10 @@ from lib.transformations import euler_matrix, quaternion_matrix, quaternion_from
 from scipy.spatial.transform import Rotation as Ro
 from yolo_det import Net as detNet
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--dataset_root', type=str, default = '/home/fht/data/ocrtoc', help='dataset root dir')
-parser.add_argument('--model', type=str, default = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_model_current.pth',  help='resume PoseNet model')
-parser.add_argument('--refine_model', type=str, default = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_refine_model_current.pth',  help='resume PoseRefineNet model')
-opt = parser.parse_args()
 
-class pose_pred():
+class PoseDet():
     def __init__(self, dataset_root = '/home/fht/data/ocrtoc', model = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_model_current.pth', refine_model = '/home/fht/code/DenseFusion-1-Pytorch-1.6/trained_models/ycb/pose_refine_model_current.pth'):
-        self.dataset_root = dataset_root
+        self.root = dataset_root
         self.model = model
         self.refine_model = refine_model
         self.norm = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
@@ -55,14 +49,9 @@ class pose_pred():
         self.num_points = 1000
         self.num_points_mesh = 500
         self.iteration = 2
-        self.bs = 1
-        self.dataset_config_dir = 'datasets/ycb/dataset_config'
-        self.root = '/home/fht/data/ocrtoc'
-        self.result_wo_refine_dir = 'experiments/eval_result/ycb/Densefusion_wo_refine_result'
-        self.result_refine_dir = 'experiments/eval_result/ycb/Densefusion_iterative_result'
 
 
-        class_file = open('/home/fht/data/ocrtoc/object_name_list.txt'.format(self.dataset_config_dir))
+        class_file = open('{0}/object_name_list.txt'.format(self.root))
         self.class_list = []
         class_id = 1
         self.cld = {}
@@ -82,6 +71,8 @@ class pose_pred():
 
             self.cld[class_id] = np.array(self.cld[class_id])
             class_id += 1
+        self.init_net()
+
 
     def init_net(self):
         self.estimator = PoseNet(num_points = self.num_points, num_obj = self.num_obj)
@@ -152,7 +143,6 @@ class pose_pred():
             # print(f'index: {idx}')
             for bbox in bboxes[idx]:
                 try:
-                    
                     print(bbox)
                     rmin, rmax, cmin, cmax = self.get_bbox(bbox)
                     mask = np.zeros(img.shape[:-1])
@@ -248,4 +238,8 @@ class pose_pred():
                     my_result_wo_refine.append([0.0 for i in range(7)])
                     my_result.append([0.0 for i in range(7)])
 
-            
+if __name__ == "__main__":
+    net = PoseDet()
+    img = cv2.imread('/home/fht/data/ocrtoc/scenes/20210512154044/rgb_undistort/0000.png')
+    dep = cv2.imread('/home/fht/data/ocrtoc/scenes/20210512154044/depth_undistort/0000.png')
+    net.inference(img, dep)
