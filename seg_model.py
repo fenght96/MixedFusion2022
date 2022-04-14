@@ -10,6 +10,7 @@ import torch
 import segmentation_models_pytorch as smp
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
+import torchvision.models.segmentation  as Models
 import pdb
 
 matplotlib.use('AGG')
@@ -71,17 +72,15 @@ class PoseDataset(Dataset):
 
         mask = np.stack(masks, axis=-1).astype('float')
         print(mask.shape)
-        
         if self.augmentation:
             sample = self.augmentation(image=image, mask=mask)
             image, mask = sample['image'], sample['mask']
-
+        print(mask.shape)
         if self.preprocessing:
             sample = self.preprocessing(image=image, mask=mask)
             image, mask = sample['image'], sample['mask']
-        print(mask.shape)
 
-
+        print(image.shape)
         return image, mask
 
     def __len__(self):
@@ -90,7 +89,7 @@ class PoseDataset(Dataset):
 def get_training_augmentation():
     train_transform = [
 
-        # albu.HorizontalFlip(p=0.5),
+        albu.HorizontalFlip(p=0.5),
 
 
         albu.PadIfNeeded(min_height=736, min_width=1280, always_apply=True, border_mode=0),
@@ -151,18 +150,15 @@ def get_preprocessing(preprocessing_fn):
 if __name__ == '__main__':
 	
     root = '/home/fht/data/ocrtoc/'
-    ENCODER = 'se_resnext50_32x4d'
+    ENCODER = 'resnet50'
     ENCODER_WEIGHTS = 'imagenet'
     ACTIVATION = 'softmax2d' # could be None for logits or 'softmax2d' for multiclass segmentation
     DEVICE = 'cuda'
 
 
-    model = smp.UnetPlusPlus(
-        encoder_name=ENCODER,
-        encoder_weights=ENCODER_WEIGHTS, 
-        classes=33,
-        activation=ACTIVATION,
-    )
+    model = Models.fcn_resnet50(
+        num_classes=33,
+    ).cuda()
 
     preprocessing_fn = smp.encoders.get_preprocessing_fn(ENCODER, ENCODER_WEIGHTS)
 	

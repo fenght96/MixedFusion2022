@@ -148,6 +148,9 @@ class PoseDet():
                     mask = np.zeros(img.shape[:-1])
                     mask[rmin:rmax, cmin:cmax] = 1.0
 
+                    # dep_min = np.min(depth[rmin:rmax,  cmin:cmax])
+                    # dep_max = np.min(depth[rmin:rmax,  cmin:cmax])
+                    # dep_median = np.median(depth[rmin:rmax,  cmin:cmax])
 
                     choose = mask[rmin:rmax, cmin:cmax].flatten().nonzero()[0]
                 
